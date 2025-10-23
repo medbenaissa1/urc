@@ -1,4 +1,4 @@
-import {getConnecterUser, triggerNotConnected} from "../lib/session";
+import {getConnecterUser, triggerNotConnected} from "../src/lib/session";
 // import { Redis } from '@upstash/redis';
 // const PushNotifications = require("@pusher/push-notifications-server");
 

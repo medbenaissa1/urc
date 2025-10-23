@@ -1,4 +1,4 @@
-import {getConnecterUser, triggerNotConnected} from "../lib/session";
+import {getConnecterUser, triggerNotConnected} from "../src/lib/session";
 
 const PushNotifications = require("@pusher/push-notifications-server");
 
