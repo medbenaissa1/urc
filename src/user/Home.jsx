@@ -1,13 +1,20 @@
+import { useNavigate } from "react-router-dom";
 import { useSession } from "../store/session";
 
 export function Home() {
-  const { user, logout } = useSession();
+  const { user, token, logout } = useSession();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();               // clear Zustand + sessionStorage
+    navigate("/login");     // redirect to login
+  };
 
   return (
     <div>
-      <h1>Welcome {user?.username || "user"} 👋</h1>
-      <p>You are now logged in!</p>
-      <button onClick={logout}>Logout</button>
+      <h2>Bienvenue {user || "invité"} 👋</h2>
+      <p>Votre token : {token ? token : "Aucun token trouvé"}</p>
+      <button onClick={handleLogout}>Déconnexion</button>
     </div>
   );
 }

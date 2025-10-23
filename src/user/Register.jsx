@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { apiFetch } from "../lib/api";
+import { useNavigate } from "react-router-dom";
 
 export function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -13,13 +15,15 @@ export function Register() {
     const password = data.get("password");
 
     try {
-      const res = await apiFetch("/api/register", {
+      await apiFetch("/api/register", {
         method: "POST",
         body: JSON.stringify({ username, email, password }),
       });
 
-      setSuccess("Inscription réussie ! Vous pouvez vous connecter.");
-      setError("");
+
+
+      // redirect after 1.5 s
+      setTimeout(() => navigate("/login"), 10);
     } catch (err) {
       setError("Erreur lors de l'inscription. Vérifiez vos champs.");
       setSuccess("");
