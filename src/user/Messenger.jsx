@@ -1,3 +1,4 @@
+// src/user/Messenger.jsx
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useChat } from "../store/chat";
@@ -10,7 +11,6 @@ export function Messenger() {
   const loadUsers = useChat((s) => s.loadUsers);
   const selectUser = useChat((s) => s.selectUser);
 
-  // 1) Charger les utilisateurs
   useEffect(() => {
     (async () => {
       try {
@@ -25,11 +25,8 @@ export function Messenger() {
     })();
   }, [loadUsers, navigate]);
 
-  // 2) Synchroniser la sélection depuis l’URL
   useEffect(() => {
-    if (userId) {
-      selectUser(userId);
-    }
+    if (userId) selectUser(userId);
   }, [userId, selectUser]);
 
   return (

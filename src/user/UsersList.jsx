@@ -1,3 +1,4 @@
+// src/user/UsersList.jsx
 import { useNavigate } from "react-router-dom";
 import { useChat } from "../store/chat";
 import { useSession } from "../store/session";
@@ -11,7 +12,7 @@ export function UsersList() {
 
   const handleClick = (u) => {
     selectUser(u.user_id);
-    navigate(`/messages/user/${u.user_id}`, { replace: false });
+    navigate(`/messages/user/${u.user_id}`);
   };
 
   return (
@@ -26,17 +27,16 @@ export function UsersList() {
               <li key={u.user_id} style={{ marginBottom: 6 }}>
                 <button
                   onClick={() => handleClick(u)}
-                  title={`Dernière connexion : ${u.last_login ?? "N/A"}`}
                   style={{
-                    all: "unset",             // enlève le style bouton natif
+                    all: "unset",
                     cursor: "pointer",
-                    display: "block",
                     width: "100%",
+                    textAlign: "left",
                     padding: "8px 6px",
                     borderRadius: 8,
                     background: isActive ? "#f0f6ff" : "transparent",
-                    textAlign: "left",
                   }}
+                  title={`Dernière connexion : ${u.last_login ?? "N/A"}`}
                 >
                   <div style={{ fontWeight: 500 }}>{u.username}</div>
                   <small style={{ opacity: 0.7 }}>

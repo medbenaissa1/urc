@@ -1,7 +1,8 @@
-// api/message.js
+
 import Redis from "ioredis";
 import crypto from "crypto";
-import { checkSession } from "../src/lib/session";
+import { checkSession, unauthorizedResponse } from "./lib/session";
+
 
 export const config = {
   runtime: "nodejs", // ⚠️ must be serverless (not Edge)
