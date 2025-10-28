@@ -36,7 +36,7 @@ export function Home() {
         }}
       >
         <Typography variant="h4" gutterBottom fontWeight={700}>
-          Bienvenue {username} 👋
+          Bienvenue {username} 
         </Typography>
 
         <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
