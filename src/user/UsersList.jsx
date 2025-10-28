@@ -1,4 +1,3 @@
-// src/user/UsersList.jsx
 import { useNavigate } from "react-router-dom";
 import { useChat } from "../store/chat";
 import { useSession } from "../store/session";
@@ -16,8 +15,15 @@ export function UsersList() {
   };
 
   return (
-    <aside style={{ width: 280, borderRight: "1px solid #eee", padding: 12 }}>
-      <h3>Utilisateurs</h3>
+    <aside
+      style={{
+        width: 280,
+        borderRight: "1px solid #eee",
+        padding: 12,
+        background: "#fff",
+      }}
+    >
+      <h3 style={{ marginBottom: 12 }}>Utilisateurs</h3>
       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
         {users
           .filter((u) => u.user_id !== currentUserId)
@@ -34,7 +40,7 @@ export function UsersList() {
                     textAlign: "left",
                     padding: "8px 6px",
                     borderRadius: 8,
-                    background: isActive ? "#f0f6ff" : "transparent",
+                    background: isActive ? "#e8f0fe" : "transparent",
                   }}
                   title={`Dernière connexion : ${u.last_login ?? "N/A"}`}
                 >
