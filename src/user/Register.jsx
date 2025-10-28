@@ -1,6 +1,16 @@
 import { useState } from "react";
 import { apiFetch } from "../lib/api";
 import { useNavigate } from "react-router-dom";
+import {
+  Container,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  Stack,
+  Alert,
+  Divider,
+} from "@mui/material";
 
 export function Register() {
   const [error, setError] = useState("");
@@ -20,10 +30,9 @@ export function Register() {
         body: JSON.stringify({ username, email, password }),
       });
 
-
-
-      // redirect after 1.5 s
-      setTimeout(() => navigate("/login"), 10);
+      setSuccess("Compte créé avec succès !");
+      setError("");
+      setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
       setError("Erreur lors de l'inscription. Vérifiez vos champs.");
       setSuccess("");
@@ -31,14 +40,92 @@ export function Register() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Créer un compte</h2>
-      <input name="login" placeholder="Nom d’utilisateur" required /><br/>
-      <input name="email" placeholder="Email" type="email" required /><br/>
-      <input name="password" placeholder="Mot de passe" type="password" required /><br/>
-      <button type="submit">S'inscrire</button>
-      {success && <p style={{ color: "green" }}>{success}</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </form>
+    <Container
+      maxWidth="sm"
+      sx={{
+        minHeight: "100dvh",
+        display: "grid",
+        placeItems: "center",
+        backgroundColor: "background.default",
+      }}
+    >
+      <Paper elevation={0} sx={{ p: 4, width: "100%" }}>
+        <Stack spacing={2} alignItems="center">
+          <Typography variant="h4" component="h1">
+            Créer un compte
+          </Typography>
+          <Typography variant="body2" color="text.secondary" align="center">
+            Inscrivez-vous pour accéder à la messagerie.
+          </Typography>
+        </Stack>
+
+        {error && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {error}
+          </Alert>
+        )}
+        {success && (
+          <Alert severity="success" sx={{ mt: 2 }}>
+            {success}
+          </Alert>
+        )}
+
+        <form onSubmit={handleSubmit} style={{ marginTop: 16 }}>
+          <Stack spacing={2.5}>
+            <TextField
+              label="Nom d’utilisateur"
+              name="login"
+              autoComplete="username"
+              required
+            />
+            <TextField
+              label="Email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+            />
+            <TextField
+              label="Mot de passe"
+              name="password"
+              type="password"
+              autoComplete="new-password"
+              required
+            />
+
+            <Button variant="contained" type="submit" size="large">
+              S’inscrire
+            </Button>
+          </Stack>
+        </form>
+
+        <Divider sx={{ mt: 2, mb: 1 }} />
+        <Stack
+          direction="row"
+          spacing={0.5}
+          justifyContent="center"
+          alignItems="center"
+          sx={{ mt: 1 }}
+        >
+          <Typography variant="body2" color="text.secondary">
+            Vous avez déjà un compte ?
+          </Typography>
+          <Button
+            variant="text"
+            size="small"
+            onClick={() => navigate("/login")}
+            sx={{
+              fontWeight: 600,
+              textTransform: "none",
+              ml: 0.5,
+              color: "primary.main",
+              "&:hover": { textDecoration: "underline" },
+            }}
+          >
+            Se connecter
+          </Button>
+        </Stack>
+      </Paper>
+    </Container>
   );
 }

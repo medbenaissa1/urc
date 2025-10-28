@@ -1,24 +1,28 @@
-// src/store/session.js
 import { create } from "zustand";
 
 export const useSession = create((set) => ({
-  // 🔹 État initial : relit le token et l'utilisateur depuis le sessionStorage
+  // Initial state (read token + username)
   token: sessionStorage.getItem("token") || null,
   user: sessionStorage.getItem("username")
-    ? { username: sessionStorage.getItem("username") }
+    ? { username: sessionStorage.getItem("username"), id: sessionStorage.getItem("user_id") || null }
     : null,
 
-  // 🔹 Appelé après une connexion réussie
-  setAuth: (token, username) => {
+  // Called after login
+  setAuth: (token, username, id = null) => {
     sessionStorage.setItem("token", token);
     sessionStorage.setItem("username", username);
-    set({ token, user: { username } });
+    if (id) sessionStorage.setItem("user_id", id);
+    set({
+      token,
+      user: { username, id },
+    });
   },
 
-  // 🔹 Déconnexion (efface tout)
+  // Logout
   logout: () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("username");
+    sessionStorage.removeItem("user_id");
     set({ token: null, user: null });
   },
 }));

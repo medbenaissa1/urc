@@ -1,11 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import { useChat } from "../store/chat";
-import { useSession } from "../store/session";
+import {
+  Box,
+  Typography,
+  TextField,
+  IconButton,
+  Paper,
+  Stack,
+  Avatar,
+} from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
 
 export function MessagesList() {
-  const { user } = useSession();
+  
   const selected = useChat((s) => s.selected);
   const messages = useChat((s) => s.messages);
+  const users = useChat((s) => s.users);
   const loadMessages = useChat((s) => s.loadMessages);
   const sendMessage = useChat((s) => s.sendMessage);
 
@@ -14,6 +24,14 @@ export function MessagesList() {
   const bottomRef = useRef(null);
 
   const list = selected ? messages[selected.id] || [] : [];
+
+  // find peer username for header/avatars
+  const peer =
+    selected && Array.isArray(users)
+      ? users.find((u) => Number(u.user_id) === Number(selected.id))
+      : null;
+  const peerName = peer?.username || `Utilisateur #${selected?.id ?? ""}`;
+  const peerInitial = (peerName?.[0] || "U").toUpperCase();
 
   // Load messages when user changes
   useEffect(() => {
@@ -40,86 +58,181 @@ export function MessagesList() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!text.trim() || !selected) return;
-    await sendMessage(selected.id, text.trim());
+    await sendMessage(selected.id, text.trim()); // keep your existing logic
     setText("");
   };
 
   if (!selected) {
     return (
-      <div style={{ padding: 16 }}>
-        <h3>Choisis un utilisateur pour commencer la discussion</h3>
-      </div>
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "text.secondary",
+        }}
+      >
+        <Typography variant="h6">
+          Choisis un utilisateur pour commencer la discussion 💬
+        </Typography>
+      </Box>
     );
   }
 
   return (
-    <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      <div style={{ padding: 12, borderBottom: "1px solid #ddd" }}>
-        <strong>Discussion avec utilisateur #{selected.id}</strong>
-      </div>
+    <Box
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        bgcolor: "background.default",
+      }}
+    >
+      {/* Header */}
+      <Paper
+        elevation={0}
+        sx={{
+          p: 2,
+          borderBottom: "1px solid #e0e0e0",
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+          background: "#fff",
+        }}
+      >
+        <Avatar sx={{ bgcolor: "primary.main" }}>{peerInitial}</Avatar>
+        <Box>
+          <Typography variant="subtitle1" fontWeight={600}>
+            {peerName}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            En ligne récemment
+          </Typography>
+        </Box>
+      </Paper>
 
-      <div id="chat-box" style={{ flex: 1, overflowY: "auto", padding: 12 }}>
+      {/* Chat area */}
+      <Box
+        sx={{
+          flex: 1,
+          overflowY: "auto",
+          p: 3,
+          display: "flex",
+          flexDirection: "column",
+          gap: 1.5,
+          backgroundColor: "#f8fafc",
+        }}
+      >
         {list.map((m) => {
-          const isMine = m.from === user?.id;
+          // 💡 Key change: align using selected.id, no need for current user id
+          const isMine = Number(m.to) === Number(selected.id);
+
           return (
-            <div
+            <Stack
               key={m.id}
-              style={{
-                display: "flex",
-                justifyContent: isMine ? "flex-end" : "flex-start",
-                marginBottom: 8,
-              }}
+              direction="row"
+              justifyContent={isMine ? "flex-end" : "flex-start"}
+              spacing={1}
+              alignItems="flex-end"
             >
-              <div
-                style={{
-                  background: isMine ? "#4f8ef7" : "#e5e5ea",
-                  color: isMine ? "white" : "black",
-                  padding: "10px 14px",
-                  borderRadius: 18,
+              {!isMine && (
+                <Avatar
+                  sx={{
+                    bgcolor: "#ddd",
+                    width: 28,
+                    height: 28,
+                    fontSize: 13,
+                  }}
+                >
+                  {peerInitial}
+                </Avatar>
+              )}
+
+              <Paper
+                sx={{
+                  px: 2,
+                  py: 1.2,
+                  borderRadius: 4,
                   maxWidth: "70%",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
+                  backgroundColor: isMine ? "#0B5FFF" : "#e9ecef",
+                  color: isMine ? "white" : "black",
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
                 }}
                 title={new Date(m.ts).toLocaleString()}
               >
-                <div style={{ fontSize: 13, opacity: 0.7, marginBottom: 3 }}>
-                  {isMine ? "Moi" : `Utilisateur #${m.from}`}
-                </div>
-                <div>{m.content}</div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    opacity: 0.6,
-                    marginTop: 4,
+                {/* optional tiny sender label; hide for mine */}
+                {!isMine && (
+                  <Typography
+                    variant="caption"
+                    sx={{ opacity: 0.65, display: "block", mb: 0.5 }}
+                  >
+                    {peerName}
+                  </Typography>
+                )}
+
+                <Typography
+                  variant="body2"
+                  sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+                >
+                  {m.content}
+                </Typography>
+
+                <Typography
+                  variant="caption"
+                  sx={{
+                    display: "block",
+                    opacity: 0.7,
+                    mt: 0.5,
                     textAlign: isMine ? "right" : "left",
                   }}
                 >
-                  {new Date(m.ts).toLocaleTimeString()}
-                </div>
-              </div>
-            </div>
+                  {new Date(m.ts).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </Typography>
+              </Paper>
+            </Stack>
           );
         })}
 
         {isTyping && (
-          <div style={{ fontStyle: "italic", opacity: 0.6, marginBottom: 8 }}>
+          <Typography
+            variant="caption"
+            sx={{
+              fontStyle: "italic",
+              opacity: 0.6,
+              mt: 1,
+              pl: 1,
+            }}
+          >
             Tu es en train d’écrire…
-          </div>
+          </Typography>
         )}
 
         <div ref={bottomRef} />
-      </div>
+      </Box>
 
-      <form
+      {/* Input bar */}
+      <Paper
+        component="form"
         onSubmit={handleSubmit}
-        style={{
+        elevation={3}
+        sx={{
+          p: 1.2,
+          borderTop: "1px solid #e0e0e0",
           display: "flex",
-          gap: 8,
-          borderTop: "1px solid #ddd",
-          padding: 12,
-          background: "white",
+          alignItems: "center",
+          gap: 1,
+          background: "#fff",
         }}
       >
-        <input
+        <TextField
+          placeholder="Écris ton message..."
+          variant="outlined"
+          size="small"
+          fullWidth
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => {
@@ -128,28 +241,26 @@ export function MessagesList() {
               handleSubmit(e);
             }
           }}
-          placeholder="Écris ton message…"
-          style={{
-            flex: 1,
-            padding: "8px 10px",
-            borderRadius: 6,
-            border: "1px solid #ddd",
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "25px",
+            },
           }}
         />
-        <button
+        <IconButton
           type="submit"
-          style={{
-            background: "#4f8ef7",
+          disabled={!text.trim()}
+          sx={{
+            bgcolor: "primary.main",
             color: "white",
-            border: "none",
-            padding: "8px 14px",
-            borderRadius: 6,
-            cursor: "pointer",
+            "&:hover": { bgcolor: "primary.dark" },
+            width: 45,
+            height: 45,
           }}
         >
-          Envoyer
-        </button>
-      </form>
-    </div>
+          <SendIcon />
+        </IconButton>
+      </Paper>
+    </Box>
   );
 }

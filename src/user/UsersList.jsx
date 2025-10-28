@@ -1,6 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import { useChat } from "../store/chat";
 import { useSession } from "../store/session";
+import {
+  Box,
+  List,
+  ListItemButton,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
+  Typography,
+  Divider,
+} from "@mui/material";
 
 export function UsersList() {
   const navigate = useNavigate();
@@ -15,44 +25,58 @@ export function UsersList() {
   };
 
   return (
-    <aside
-      style={{
-        width: 280,
-        borderRight: "1px solid #eee",
-        padding: 12,
-        background: "#fff",
+    <Box
+      sx={{
+        width: 300,
+        bgcolor: "background.paper",
+        borderRight: "1px solid #e0e0e0",
+        overflowY: "auto",
       }}
     >
-      <h3 style={{ marginBottom: 12 }}>Utilisateurs</h3>
-      <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+      <Typography
+        variant="h6"
+        sx={{ px: 2, py: 2, fontWeight: 600 }}
+      >
+        Utilisateurs
+      </Typography>
+      <Divider />
+      <List disablePadding>
         {users
           .filter((u) => u.user_id !== currentUserId)
           .map((u) => {
             const isActive = selected?.id === u.user_id;
             return (
-              <li key={u.user_id} style={{ marginBottom: 6 }}>
-                <button
-                  onClick={() => handleClick(u)}
-                  style={{
-                    all: "unset",
-                    cursor: "pointer",
-                    width: "100%",
-                    textAlign: "left",
-                    padding: "8px 6px",
-                    borderRadius: 8,
-                    background: isActive ? "#e8f0fe" : "transparent",
-                  }}
-                  title={`Dernière connexion : ${u.last_login ?? "N/A"}`}
-                >
-                  <div style={{ fontWeight: 500 }}>{u.username}</div>
-                  <small style={{ opacity: 0.7 }}>
-                    Dernière connexion : {u.last_login ?? "—"}
-                  </small>
-                </button>
-              </li>
+              <ListItemButton
+                key={u.user_id}
+                onClick={() => handleClick(u)}
+                selected={isActive}
+                sx={{
+                  py: 1.5,
+                  px: 2,
+                  "&.Mui-selected": {
+                    bgcolor: "primary.light",
+                    color: "primary.contrastText",
+                    "&:hover": { bgcolor: "primary.main" },
+                  },
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar>
+                    {u.username?.charAt(0).toUpperCase()}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={u.username}
+                  secondary={
+                    <Typography variant="caption" color="text.secondary">
+                      Dernière connexion : {u.last_login ?? "—"}
+                    </Typography>
+                  }
+                />
+              </ListItemButton>
             );
           })}
-      </ul>
-    </aside>
+      </List>
+    </Box>
   );
 }
