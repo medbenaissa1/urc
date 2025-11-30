@@ -1,5 +1,6 @@
 # DOCUMENTATION - URC (UBO Relay Chat)
 # NOTE: REDIS MUST BE RESTORED AFTER MORE THA N15 DAYS OF INACTIVITY SO I MIGRATED IT 
+#  MY OWN DOCUMENTATION IS IN DOCUMENTATION.md
  You can create a user or login with test/testubo(https://urc-tau-jade.vercel.app/login)
 
 **Application de messagerie temps réel déployée sur Vercel** 
