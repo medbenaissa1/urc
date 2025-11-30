@@ -1,4 +1,6 @@
 # DOCUMENTATION - URC (UBO Relay Chat)
+# NOTE: REDIS MUST BE RESTORED AFTER MORE THA N15 DAYS OF INACTIVITY SO I MIGRATED IT 
+ You can create a user or login with test/testubo(https://urc-tau-jade.vercel.app/login)
 
 **Application de messagerie temps réel déployée sur Vercel** 
 Testée en production avec utilisateurs en France et Maroc
@@ -1311,7 +1313,7 @@ L'application est déployée sur **Vercel** avec l'intégration complète des se
 
 
 ### Lien de déploiement
-🚀 [Application en production](https://urc.vercel.app/)
+🚀 [Application en production](https://urc-tau-jade.vercel.app/login)
 
 
 
@@ -1477,7 +1479,7 @@ Seules les variables d'env changent.
 - [GitHub Discussions](https://github.com/medbenaissa1/urc/discussions)
 
 ## Crédits / Remerciements
-- **Développement** : TP réalisé par moi 
+- **Développement** : Mohammed BENAISSA
 - **Tests** : 
   - API testées via Postman
   - Production testing en temps réel avec utilisateurs en France et Maroc
